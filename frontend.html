@@ -34,7 +34,7 @@
             border-radius: 10px;
             background: rgba(255, 255, 255, 0.2);
             /* semi-transparent */
-            backdrop-filter: blur(2px);
+            backdrop-filter: blur(5px);
 
         }
 
@@ -196,6 +196,10 @@
                             <p><strong>Name:</strong> ${result.product.name}</p>
                             <p><strong>Price:</strong> ₹${result.product.price}</p>
                             <p><strong>Stock:</strong> ${result.product.stock}</p>
+                            <p><strong>Brand:</strong> ${result.product.brand}</p>
+                            <p><strong>Brand:</strong> ${result.product.category}</p>
+                            <p><strong>Barcode:</strong> ${result.product.barcode}</p>
+                            <p><strong>Date:</strong> ${new Date(result.product.createdAt).toLocaleString()}</p>
                         </div>
                     `;
                 } else {
