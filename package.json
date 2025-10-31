@@ -1,0 +1,14 @@
+{
+  "name": "clothing-shop-barcode",
+  "version": "1.0.0",
+  "description": "Simple clothing shop barcode system",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.0",
+    "mongodb": "^5.0.0",
+    "cors": "^2.8.5"
+  }
+}

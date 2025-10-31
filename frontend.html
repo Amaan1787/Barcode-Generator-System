@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>👔 Clothing Shop - Barcode System</title>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: url(/bg.jpg);
+            /* background: white; */
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .section {
+            margin: 25px 0;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            /* semi-transparent */
+            backdrop-filter: blur(2px);
+
+        }
+
+        input,
+        select,
+        button {
+            padding: 12px;
+            margin: 8px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #165ffc 0%, #165ffc 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #barcode-display {
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            border: 2px dashed #667eea;
+        }
+
+        .product-info {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #4CAF50;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>👔 My Clothing Shop - Barcode System</h1>
+
+        <!-- Add New Product -->
+        <div class="section">
+            <h2>➕ Add New Clothing Item</h2>
+            <div>
+                <input type="text" id="productName" placeholder="Product Name" style="width: 250px;">
+                <select id="category" style="width: 150px;">
+                    <option value="">Select Category</option>
+                    <option value="shirts">👔 Shirts</option>
+                    <option value="pants">👖 Pants</option>
+                    <option value="dresses">👗 Dresses</option>
+                    <option value="shoes">👟 Shoes</option>
+                </select>
+                <input type="text" id="brand" placeholder="Brand" style="width: 150px;">
+            </div>
+            <div>
+                <input type="number" id="price" placeholder="Price ₹" style="width: 120px;">
+                <input type="number" id="stock" placeholder="Stock" style="width: 120px;">
+            </div>
+            <br>
+            <button onclick="addProduct()">🏷️ Add Product & Generate Barcode</button>
+        </div>
+
+        <!-- Barcode Display -->
+        <div class="section">
+            <h2>📊 Generated Barcode</h2>
+            <div id="barcode-display">
+                <p>Add a product above to generate barcode</p>
+            </div>
+            <button onclick="downloadBarcode()" style="display:none;" id="download-btn">📥 Download</button>
+        </div>
+
+        <!-- Search Product -->
+        <div class="section">
+            <h2>🔍 Search Product</h2>
+            <input type="text" id="search-barcode" placeholder="Enter Barcode" style="width: 300px;">
+            <button onclick="searchProduct()">🔍 Search</button>
+            <div id="search-result"></div>
+        </div>
+    </div>
+
+    <script>
+        async function addProduct() {
+            const product = {
+                name: document.getElementById('productName').value,
+                category: document.getElementById('category').value,
+                brand: document.getElementById('brand').value,
+                price: document.getElementById('price').value,
+                stock: document.getElementById('stock').value
+            };
+
+            if (!product.name || !product.category || !product.price) {
+                alert('Please fill required fields!');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:3000/add-product', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(product)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('Product added! Barcode: ' + result.barcode);
+                    generateBarcode(result.barcode);
+                    clearForm();
+                } else {
+                    alert('Error: ' + result.error);
+                }
+            } catch (error) {
+                alert('Server connection error!');
+            }
+        }
+
+        function generateBarcode(code) {
+            const canvas = document.createElement('canvas');
+            document.getElementById('barcode-display').innerHTML = '<h3>Barcode: ' + code + '</h3>';
+            document.getElementById('barcode-display').appendChild(canvas);
+
+            JsBarcode(canvas, code, {
+                format: "CODE128",
+                width: 3,
+                height: 100,
+                displayValue: true
+            });
+
+            document.getElementById('download-btn').style.display = 'inline-block';
+        }
+
+        function downloadBarcode() {
+            const canvas = document.querySelector('#barcode-display canvas');
+            if (canvas) {
+                const link = document.createElement('a');
+                link.download = 'barcode.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            }
+        }
+
+        async function searchProduct() {
+            const barcode = document.getElementById('search-barcode').value;
+            if (!barcode) return;
+
+            try {
+                const response = await fetch(`http://localhost:3000/search/${barcode}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    document.getElementById('search-result').innerHTML = `
+                        <div class="product-info">
+                            <h3>✅ Found!</h3>
+                            <p><strong>Name:</strong> ${result.product.name}</p>
+                            <p><strong>Price:</strong> ₹${result.product.price}</p>
+                            <p><strong>Stock:</strong> ${result.product.stock}</p>
+                        </div>
+                    `;
+                } else {
+                    document.getElementById('search-result').innerHTML = '<p style="color:red;">❌ Not found</p>';
+                }
+            } catch (error) {
+                alert('Search error');
+            }
+        }
+
+        function clearForm() {
+            document.getElementById('productName').value = '';
+            document.getElementById('category').value = '';
+            document.getElementById('brand').value = '';
+            document.getElementById('price').value = '';
+            document.getElementById('stock').value = '';
+        }
+    </script>
+</body>
+
+</html>
