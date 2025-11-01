@@ -11,18 +11,19 @@
             margin: 0 auto;
             padding: 20px;
             min-height: 100vh;
+            background: #c3c3c3;
         }
 
         .container {
             background: url(/bg.jpg);
-            /* background: white; */
+            /* background: #396206; */
             padding: 30px;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
 
         h1 {
-            color: #333;
+            color: #000000;
             text-align: center;
             margin-bottom: 30px;
         }
@@ -32,11 +33,12 @@
             padding: 20px;
             border: 2px solid #e0e0e0;
             border-radius: 10px;
-            background: rgba(255, 255, 255, 0.2);
-            /* semi-transparent */
-            backdrop-filter: blur(5px);
-
+            background: rgba(0, 0, 0, 0.2);
+            color: rgb(0, 0, 0);
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(1px);
         }
+
 
         input,
         select,
@@ -49,7 +51,7 @@
         }
 
         button {
-            background: linear-gradient(135deg, #165ffc 0%, #165ffc 100%);
+            background: linear-gradient(135deg, #000000 0%, #020202 100%);
             color: white;
             border: none;
             border-radius: 8px;
@@ -78,22 +80,51 @@
 
 <body>
     <div class="container">
-        <h1>👔 My Clothing Shop - Barcode System</h1>
+        <h1
+            style="font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif">
+            My Clothing Shop - Barcode System</h1>
 
         <!-- Add New Product -->
         <div class="section">
             <h2>➕ Add New Clothing Item</h2>
             <div>
                 <input type="text" id="productName" placeholder="Product Name" style="width: 250px;">
-                <select id="category" style="width: 150px;">
+                <select id="category" style="width: 160px;">
                     <option value="">Select Category</option>
-                    <option value="shirts">👔 Shirts</option>
-                    <option value="pants">👖 Pants</option>
-                    <option value="dresses">👗 Dresses</option>
-                    <option value="shoes">👟 Shoes</option>
+                    <option value="shirts"> Shirts</option>
+                    <option value="pants"> Pants</option>
+                    <option value="dresses"> Dresses</option>
+                    <option value="shoes"> Shoes</option>
                 </select>
-                <input type="text" id="brand" placeholder="Brand" style="width: 150px;">
+                <input type="text" id="brand" placeholder="Brand" style="width: 150px;" list="brandSuggestions">
             </div>
+            <datalist id="brandSuggestions">
+                <option value="Nike">
+                <option value="Adidas">
+                <option value="Puma">
+                <option value="Reebok">
+                <option value="Zara">
+                <option value="H&M">
+                <option value="Uniqlo">
+                <option value="Gucci">
+                <option value="Louis Vuitton">
+                <option value="Chanel">
+                <option value="Fabindia">
+                <option value="BIBA">
+                <option value="Allen Solly">
+                <option value="Van Heusen">
+                <option value="Max Fashion">
+                <option value="Reliance Trends">
+                <option value="Pantaloons">
+                <option value="Lifestyle">
+                <option value="Westside">
+                <option value="Forever 21">
+                <option value="VERO MODA">
+                <option value="ONLY">
+                <option value="Marks & Spencer">
+                <option value="Under Armour">
+                <option value="Converse">
+            </datalist>
             <div>
                 <input type="number" id="price" placeholder="Price ₹" style="width: 120px;">
                 <input type="number" id="stock" placeholder="Stock" style="width: 120px;">
