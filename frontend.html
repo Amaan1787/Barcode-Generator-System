@@ -107,6 +107,7 @@
                 <option value="H&M">
                 <option value="Gucci">
                 <option value="Louis Vuitton">
+                <option value="Jack & Jones">
                 <option value="Chanel">
                 <option value="Fabindia">
                 <option value="BIBA">
@@ -129,6 +130,7 @@
                 <p>Add a product above to generate barcode</p>
             </div>
             <button onclick="downloadBarcode()" style="display:none;" id="download-btn">📥 Download</button>
+            <button onclick="printBarcode()" style="display:none;" id="print-btn">📥 Print</button>
         </div>
 
         <!-- Search Product -->
@@ -174,6 +176,9 @@
             } catch (error) {
                 alert('Server connection error!');
             }
+
+            const printbtn = document.getElementById("print-btn").style.display = "inline-flex";
+
         }
 
         function generateBarcode(code) {
@@ -201,6 +206,41 @@
             }
         }
 
+
+
+        function printBarcode() {
+            var canvas = document.querySelector('#barcode-display canvas');
+            if (!canvas) {
+                alert('No barcode to print!');
+                return;
+            }
+
+            var barcodeText = document.querySelector('#barcode-display h3').innerText;
+            var imgData = canvas.toDataURL();
+
+            var printWindow = window.open('', '', 'width=600,height=400');
+
+            printWindow.document.open();
+            printWindow.document.write('<html>');
+            printWindow.document.write('<head>');
+            printWindow.document.write('<style>body{font-family:Arial;text-align:center;padding:20px;margin:0;}</style>');
+            printWindow.document.write('</head>');
+            printWindow.document.write('<body>');
+            printWindow.document.write('<h3>' + barcodeText + '</h3>');
+            printWindow.document.write('<br>');
+            printWindow.document.write('<img src="' + imgData + '" style="max-width:100%;">');
+            printWindow.document.write('</body>');
+            printWindow.document.write('</html>');
+            printWindow.document.close();
+
+            setTimeout(function () {
+                printWindow.print();
+                printWindow.close();
+            }, 1000);
+        }
+
+
+
         async function searchProduct() {
             const barcode = document.getElementById('search-barcode').value;
             if (!barcode) return;
@@ -211,17 +251,17 @@
 
                 if (result.success) {
                     document.getElementById('search-result').innerHTML = `
-                        <div class="product-info">
-                            <h3>✅ Found!</h3>
-                            <p><strong>Name:</strong> ${result.product.name}</p>
-                            <p><strong>Price:</strong> ₹${result.product.price}</p>
-                            <p><strong>Stock:</strong> ${result.product.stock}</p>
-                            <p><strong>Brand:</strong> ${result.product.brand}</p>
-                            <p><strong>Brand:</strong> ${result.product.category}</p>
-                            <p><strong>Barcode:</strong> ${result.product.barcode}</p>
-                            <p><strong>Date:</strong> ${new Date(result.product.createdAt).toLocaleString()}</p>
-                        </div>
-                    `;
+<div class="product-info">
+    <h3>✅ Found!</h3>
+    <p><strong>Name:</strong> ${result.product.name}</p>
+    <p><strong>Price:</strong> ₹${result.product.price}</p>
+    <p><strong>Stock:</strong> ${result.product.stock}</p>
+    <p><strong>Brand:</strong> ${result.product.brand}</p>
+    <p><strong>Brand:</strong> ${result.product.category}</p>
+    <p><strong>Barcode:</strong> ${result.product.barcode}</p>
+    <p><strong>Date:</strong> ${new Date(result.product.createdAt).toLocaleString()}</p>
+</div>
+`;
                 } else {
                     document.getElementById('search-result').innerHTML = '<p style="color:red;">❌ Not found</p>';
                 }

@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Clothing Shop - Barcode System</title>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Outstanding Header */
+        .hero-section {
+            background: #000000;
+            padding: 60px 20px;
+            text-align: center;
+            border-bottom: 1px solid #333;
+        }
+
+        .logo-area {
+            margin-bottom: 20px;
+        }
+
+        .app-title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: -2px;
+            margin-bottom: 8px;
+        }
+
+        .app-subtitle {
+            font-size: 1.1rem;
+            color: #888;
+            font-weight: 400;
+        }
+
+        /* Main Content Area */
+        .content-wrapper {
+            flex: 1;
+            padding: 40px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Card-Based Sections */
+        .feature-card {
+            background: #111111;
+            border: 1px solid #222;
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #333;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            background: #ffffff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-right: 16px;
+            color: #000;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        /* Outstanding Form Design */
+        .form-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .input-field {
+            position: relative;
+        }
+
+        .field-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #ccc;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            background: #1a1a1a;
+            border: 2px solid #333;
+            border-radius: 16px;
+            padding: 20px 24px;
+            font-size: 16px;
+            color: #ffffff;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: #ffffff;
+            background: #222;
+            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: #666;
+            font-weight: 400;
+        }
+
+        /* Outstanding Button Design */
+        .action-btn {
+            background: #ffffff;
+            color: #000000;
+            border: none;
+            border-radius: 16px;
+            padding: 20px 32px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            min-height: 64px;
+        }
+
+        .action-btn:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(255, 255, 255, 0.2);
+        }
+
+        .action-btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background: #ffffff;
+            color: #000000;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #ffffff;
+            border: 2px solid #333;
+        }
+
+        .btn-secondary:hover {
+            background: #111;
+            border-color: #fff;
+        }
+
+        /* Search Section */
+        .search-layout {
+            display: flex;
+            gap: 16px;
+            align-items: end;
+        }
+
+        .search-input {
+            flex: 1;
+        }
+
+        /* Outstanding Barcode Display */
+        .barcode-container {
+            background: #0a0a0a;
+            border: 2px dashed #333;
+            border-radius: 20px;
+            padding: 60px 40px;
+            text-align: center;
+            margin: 32px 0;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .barcode-container::before {
+            content: '📊';
+            position: absolute;
+            top: -12px;
+            left: 32px;
+            background: #111;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 20px;
+        }
+
+        .barcode-placeholder {
+            color: #666;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .barcode-title {
+            color: #ffffff;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        /* Outstanding Product Info */
+        .product-result {
+            background: #0d4a2d;
+            border: 2px solid #166534;
+            border-radius: 20px;
+            padding: 32px;
+            margin: 24px 0;
+            position: relative;
+        }
+
+        .product-result::before {
+            content: '✓';
+            position: absolute;
+            top: -16px;
+            right: 32px;
+            background: #22c55e;
+            color: #000;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 18px;
+        }
+
+        .result-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+
+        .result-details {
+            color: #d1fae5;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .result-item {
+            margin: 12px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .result-label {
+            font-weight: 600;
+            color: #a7f3d0;
+        }
+
+        .result-value {
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        /* Status Messages */
+        .status-message {
+            padding: 20px 24px;
+            border-radius: 16px;
+            margin: 20px 0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .status-success {
+            background: #0d4a2d;
+            color: #ffffff;
+            border: 1px solid #166534;
+        }
+
+        .status-error {
+            background: #4c1d1d;
+            color: #ffffff;
+            border: 1px solid #dc2626;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .app-title {
+                font-size: 2.5rem;
+            }
+
+            .content-wrapper {
+                padding: 20px;
+            }
+
+            .feature-card {
+                padding: 24px;
+            }
+
+            .form-layout {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .search-layout {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .barcode-container {
+                padding: 40px 20px;
+            }
+        }
+
+        /* Loading States */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .loading .action-btn::after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            margin-left: 8px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Utility Classes */
+        .w-full {
+            width: 100%;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-4 {
+            margin-top: 16px;
+        }
+
+        .mb-4 {
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <div class="hero-section">
+            <div class="logo-area">
+                <h1 class="app-title">My Clothing Shop - Barcode System</h1>
+                <p class="app-subtitle">Professional Inventory Management</p>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content-wrapper">
+            <!-- Add Product Section -->
+            <div class="feature-card">
+                <div class="card-header">
+                    <div class="card-icon">➕</div>
+                    <h2 class="card-title">Add New Clothing Item</h2>
+                </div>
+
+                <div class="form-layout">
+                    <div class="input-field">
+                        <label class="field-label">Product Name</label>
+                        <input type="text" id="productName" class="form-input" placeholder="Enter product name">
+                    </div>
+
+                    <div class="input-field">
+                        <label class="field-label">Category</label>
+                        <select id="category" class="form-select">
+                            <option value="">Select Category</option>
+                            <option value="shirts">Shirts</option>
+                            <option value="pants">Pants</option>
+                            <option value="dresses">Dresses</option>
+                            <option value="shoes">Shoes</option>
+                        </select>
+                    </div>
+
+                    <div class="input-field">
+                        <label class="field-label">Brand</label>
+                        <input type="text" id="brand" class="form-input" placeholder="Brand Name"
+                            list="brandSuggestions">
+
+                        <datalist id="brandSuggestions">
+                            <option value="Nike">
+                            <option value="Adidas">
+                            <option value="Puma">
+                            <option value="Reebok">
+                            <option value="Zara">
+                            <option value="H&M">
+                            <option value="Uniqlo">
+                            <option value="Gucci">
+                            <option value="Louis Vuitton">
+                            <option value="Chanel">
+                            <option value="Fabindia">
+                            <option value="BIBA">
+                            <option value="Allen Solly">
+                            <option value="Van Heusen">
+                            <option value="Max Fashion">
+                            <option value="Reliance Trends">
+                            <option value="Pantaloons">
+                            <option value="Lifestyle">
+                            <option value="Westside">
+                            <option value="Forever 21">
+                            <option value="VERO MODA">
+                            <option value="ONLY">
+                            <option value="Marks & Spencer">
+                            <option value="Under Armour">
+                            <option value="Converse">
+                        </datalist>
+                    </div>
+
+                    <div class="input-field">
+                        <label class="field-label">Price (₹)</label>
+                        <input type="number" id="price" class="form-input" placeholder="Enter price">
+                    </div>
+
+                    <div class="input-field">
+                        <label class="field-label">Stock</label>
+                        <input type="number" id="stock" class="form-input" placeholder="Enter stock quantity">
+                    </div>
+                </div>
+
+                <button class="action-btn btn-primary" onclick="addProduct()">
+                    🏷️ Add Product & Generate Barcode
+                </button>
+            </div>
+
+            <!-- Barcode Display -->
+            <div class="feature-card">
+                <div class="card-header">
+                    <div class="card-icon">📊</div>
+                    <h2 class="card-title">Generated Barcode</h2>
+                </div>
+
+                <div id="barcode-display" class="barcode-container">
+                    <p class="barcode-placeholder">Add a product above to generate barcode</p>
+                </div>
+
+                <div style="text-align: center; gap: 16px; display: flex; justify-content: center; flex-wrap: wrap;">
+                    <button onclick="downloadBarcode()" style="display:none;" id="download-btn"
+                        class="action-btn btn-secondary">📥 Download</button>
+                    <button onclick="printBarcode()" style="display:none;" id="print-btn"
+                        class="action-btn btn-secondary">📥 Print</button>
+                </div>
+            </div>
+
+            <!-- Search Product -->
+            <div class="feature-card">
+                <div class="card-header">
+                    <div class="card-icon">🔍</div>
+                    <h2 class="card-title">Search Product</h2>
+                </div>
+
+                <div class="search-layout">
+                    <div class="input-field search-input">
+                        <label class="field-label">Enter Barcode</label>
+                        <input type="text" id="search-barcode" class="form-input" placeholder="Enter barcode to search">
+                    </div>
+                    <button class="action-btn btn-primary" onclick="searchProduct()">🔍 Search</button>
+                </div>
+
+                <div id="search-result"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function addProduct() {
+            const product = {
+                name: document.getElementById('productName').value,
+                category: document.getElementById('category').value,
+                brand: document.getElementById('brand').value,
+                price: document.getElementById('price').value,
+                stock: document.getElementById('stock').value
+            };
+
+            if (!product.name || !product.category || !product.price) {
+                alert('Please fill required fields!');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:3000/add-product', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(product)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('Product added! Barcode: ' + result.barcode);
+                    generateBarcode(result.barcode);
+                    clearForm();
+                } else {
+                    alert('Error: ' + result.error);
+                }
+            } catch (error) {
+                alert('Server connection error!');
+            }
+
+            document.getElementById("print-btn").style.display = "inline-flex";
+        }
+
+        function generateBarcode(code) {
+            const canvas = document.createElement('canvas');
+            document.getElementById('barcode-display').innerHTML = '<h3>Barcode: ' + code + '</h3>';
+            document.getElementById('barcode-display').appendChild(canvas);
+
+            JsBarcode(canvas, code, {
+                format: "CODE128",
+                width: 3,
+                height: 100,
+                displayValue: true
+            });
+
+            document.getElementById('download-btn').style.display = 'inline-flex';
+        }
+
+        function downloadBarcode() {
+            const canvas = document.querySelector('#barcode-display canvas');
+            if (canvas) {
+                const link = document.createElement('a');
+                link.download = 'barcode.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            }
+        }
+
+        function printBarcode() {
+            var canvas = document.querySelector('#barcode-display canvas');
+            if (!canvas) {
+                alert('No barcode to print!');
+                return;
+            }
+
+            var barcodeText = document.querySelector('#barcode-display h3').innerText;
+            var imgData = canvas.toDataURL();
+
+            var printWindow = window.open('', '', 'width=600,height=400');
+
+            printWindow.document.open();
+            printWindow.document.write('<html>');
+            printWindow.document.write('<head>');
+            printWindow.document.write('<style>body{font-family:Arial;text-align:center;padding:20px;margin:0;}</style>');
+            printWindow.document.write('</head>');
+            printWindow.document.write('<body>');
+            printWindow.document.write('<h3>' + barcodeText + '</h3>');
+            printWindow.document.write('<br>');
+            printWindow.document.write('<img src="' + imgData + '" style="max-width:100%;">');
+            printWindow.document.write('</body>');
+            printWindow.document.write('</html>');
+            printWindow.document.close();
+
+            setTimeout(function () {
+                printWindow.print();
+                printWindow.close();
+            }, 1000);
+        }
+
+
+        async function searchProduct() {
+            const barcode = document.getElementById('search-barcode').value;
+            if (!barcode) return;
+
+            try {
+                const response = await fetch(`http://localhost:3000/search/${barcode}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    document.getElementById('search-result').innerHTML = `
+                        <div class="product-result">
+                            <h3 class="result-title">✅ Product Found!</h3>
+                            <div class="result-details">
+                                <p><strong>Name:</strong> ${result.product.name}</p>
+                                <p><strong>Price:</strong> ₹${result.product.price}</p>
+                                <p><strong>Stock:</strong> ${result.product.stock}</p>
+                                <p><strong>Brand:</strong> ${result.product.brand}</p>
+                                <p><strong>Category:</strong> ${result.product.category}</p>
+                                <p><strong>Barcode:</strong> ${result.product.barcode}</p>
+                                <p><strong>Date:</strong> ${new Date(result.product.createdAt).toLocaleDateString()}</p>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    document.getElementById('search-result').innerHTML = '<p style="color:red;">❌ Product not found</p>';
+                }
+            } catch (error) {
+                alert('Search error');
+            }
+        }
+
+        function clearForm() {
+            document.getElementById('productName').value = '';
+            document.getElementById('category').value = '';
+            document.getElementById('brand').value = '';
+            document.getElementById('price').value = '';
+            document.getElementById('stock').value = '';
+        }
+    </script>
+</body>
+
+</html>

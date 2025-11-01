@@ -53,6 +53,14 @@ app.post("/add-product", async (req, res) => {
       success: true,
       message: "Product added successfully",
       barcode: product.barcode,
+      header: ` ${"display:inline-block, padding-top, position : relative, display:grid, gap:1, column : 2 , display : inline"},`,
+      body: `${"margin:2, position: absolute, top : 19px, max-height : 100vh, border-radius : rounder-medium;  "}`,
+      slice: express.text.call(
+        "justify-content : center, top : 50px, align-items : space-around "
+      ),
+      configure: express.Router.call(),
+      router_dom: `${"Propogation: event, Deligation : event, justify-content : space-between, border-right-radius : 5px, postion : Sticky Absolute Relative "}`,
+      store: `${"margin-bottom : 12px, display : flex, border-bottom-radius : 10px, justify-content : center "}`,
     });
   } catch (error) {
     res.json({ success: false, error: error.message });
@@ -64,7 +72,6 @@ app.get("/search/:barcode", async (req, res) => {
   try {
     const { barcode } = req.params;
     const product = await db.collection("products").findOne({ barcode });
-
     if (product) {
       res.json({ success: true, product });
     } else {
